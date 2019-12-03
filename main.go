@@ -8,13 +8,13 @@ import (
 	"crypto/sha1"
 	"encoding/base32"
 	"encoding/binary"
+	"flag"
 	"fmt"
+	"github.com/atotto/clipboard"
+	"os"
 	"strconv"
 	"strings"
 	"time"
-	"flag"
- 	"github.com/atotto/clipboard"
-	"os"
 	"unicode"
 )
 
@@ -80,42 +80,42 @@ func getTOTPToken(secret string) string {
 }
 
 func usage() {
-  fmt.Fprintf(os.Stderr, "Usage: %s\n", os.Args[0])
-  flag.PrintDefaults()
+	fmt.Fprintf(os.Stderr, "Usage: %s\n", os.Args[0])
+	flag.PrintDefaults()
 }
 
 func SpaceMap(str string) string {
-  return strings.Map(func(r rune) rune {
-    if unicode.IsSpace(r) {
-      return -1
-    }
-    return r
-  }, str)
+	return strings.Map(func(r rune) rune {
+		if unicode.IsSpace(r) {
+			return -1
+		}
+		return r
+	}, str)
 }
 
 func main() {
-  // Parse command line options with default values defined below
-  flag.Usage = usage
-  otpTokenPtr := flag.String("otp_token", "", "OTP Token")
-  printPtr := flag.Bool("output_stdout", true, "Print OTP value")
-  clipboardPtr := flag.Bool("output_clipboard", false, "Copy OTP value to clipboard")
-  flag.Parse()
-  //fmt.Println(*otpTokenPtr) // debug
-  var token string
-  // remove any whitespace from token
-  token = SpaceMap(*otpTokenPtr)
-  // verify that token is not empty string
-  if token == "" {
-    fmt.Println("No otp_token specified.")
-    flag.Usage()
-    os.Exit(1)
-  }
-  // get otp and return as per method requested
-  otp := getTOTPToken(token)
-  if *printPtr == true {
-    fmt.Println(otp)
-  }
-  if *clipboardPtr == true {
-    clipboard.WriteAll(otp)
-  }
+	// Parse command line options with default values defined below
+	flag.Usage = usage
+	otpTokenPtr := flag.String("otp_token", "", "OTP Token")
+	printPtr := flag.Bool("output_stdout", true, "Print OTP value")
+	clipboardPtr := flag.Bool("output_clipboard", false, "Copy OTP value to clipboard")
+	flag.Parse()
+	//fmt.Println(*otpTokenPtr) // debug
+	var token string
+	// remove any whitespace from token
+	token = SpaceMap(*otpTokenPtr)
+	// verify that token is not empty string
+	if token == "" {
+		fmt.Println("No otp_token specified.")
+		flag.Usage()
+		os.Exit(1)
+	}
+	// get otp and return as per method requested
+	otp := getTOTPToken(token)
+	if *printPtr == true {
+		fmt.Println(otp)
+	}
+	if *clipboardPtr == true {
+		clipboard.WriteAll(otp)
+	}
 }
