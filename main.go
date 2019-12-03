@@ -12,10 +12,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
-  "flag"
-  "github.com/atotto/clipboard"
-  "os"
-  "unicode"
+	"flag"
+ 	"github.com/atotto/clipboard"
+	"os"
+	"unicode"
 )
 
 //Panic if error is not nil
@@ -104,6 +104,12 @@ func main() {
   var token string
   // remove any whitespace from token
   token = SpaceMap(*otpTokenPtr)
+  // verify that token is not empty string
+  if token == "" {
+    fmt.Println("No otp_token specified.")
+    flag.Usage()
+    os.Exit(1)
+  }
   // get otp and return as per method requested
   otp := getTOTPToken(token)
   if *printPtr == true {
